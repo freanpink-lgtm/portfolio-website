@@ -7,6 +7,9 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    // Check initial scroll position on mount
+    setIsScrolled(window.scrollY > 50);
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -28,8 +31,9 @@ const Navbar = () => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'glass py-4' : 'bg-transparent py-6'
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      className={`z-50 transition-all duration-300 min-h-[64px] ${
+        isScrolled ? 'glass py-3 sm:py-4' : 'bg-transparent py-3 sm:py-4 md:py-6'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +41,7 @@ const Navbar = () => {
           {/* Logo */}
           <motion.a
             href="#home"
-            className="text-2xl font-bold text-gradient"
+            className="text-2xl font-bold text-gradient h-8 flex items-center"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -63,7 +67,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="md:hidden text-gray-700 text-3xl"
+            className="md:hidden text-gray-700 text-3xl h-8 w-8 flex items-center justify-center"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             whileTap={{ scale: 0.9 }}
           >
