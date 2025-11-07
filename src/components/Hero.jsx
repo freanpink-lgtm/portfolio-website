@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
 import { HiMail, HiPhone, HiLocationMarker, HiDownload } from 'react-icons/hi';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import profileImage from '../assets/profile.jpg';
 
 const Hero = () => {
   const containerVariants = {
@@ -145,7 +146,7 @@ const Hero = () => {
             <motion.div
               className="relative w-80 h-80 rounded-full overflow-hidden glass p-2"
               animate={{
-                y: [0, -20, 0],
+                y: [0, -30, 0],
               }}
               transition={{
                 duration: 4,
@@ -153,9 +154,11 @@ const Hero = () => {
                 ease: 'easeInOut',
               }}
             >
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white text-6xl font-bold">
-                NP
-              </div>
+              <img
+                src={profileImage}
+                alt="Profile"
+                className="w-full h-full rounded-full object-cover"
+              />
             </motion.div>
 
             {/* Floating Elements */}

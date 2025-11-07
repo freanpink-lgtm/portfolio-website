@@ -1,12 +1,17 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { HiAcademicCap, HiCalendar, HiStar } from 'react-icons/hi';
+import { HiAcademicCap, HiCalendar, HiStar, HiX } from 'react-icons/hi';
+import { useState } from 'react';
+import cerAIBasic from '../assets/cerAIBasic.jpg';
+import cerAIBasicOverview from '../assets/cerAIBasic_overview.jpg';
 
 const Education = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
+
+  const [modalImage, setModalImage] = useState(null);
 
   const education = [
     {
@@ -44,6 +49,8 @@ const Education = () => {
       name: 'AI Basics: Overview of AI',
       issuer: 'CRA Training Program',
       icon: '🤖',
+      images: [cerAIBasicOverview, cerAIBasic],
+      featured: true,
     },
     {
       name: 'Digital Marketing on Smartphones',
@@ -156,7 +163,7 @@ const Education = () => {
           </div>
 
           {/* Certifications Section */}
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <motion.h3
               className="text-3xl font-bold text-center mb-8"
               initial={{ opacity: 0, y: 20 }}
@@ -166,14 +173,63 @@ const Education = () => {
               Certifications & <span className="text-gradient">Training</span>
             </motion.h3>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {certifications.map((cert, index) => (
+            {/* Featured Certification */}
+            {certifications.filter(cert => cert.featured).map((cert, index) => (
+              <motion.div
+                key={`featured-${index}`}
+                className="glass rounded-xl overflow-hidden mb-8"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={inView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ delay: 0.8 }}
+              >
+                <div className="p-6">
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-5xl">{cert.icon}</span>
+                    <div>
+                      <h4 className="text-2xl font-bold text-gray-800">{cert.name}</h4>
+                      <p className="text-lg text-gray-600">{cert.issuer}</p>
+                    </div>
+                    <div className="ml-auto inline-flex items-center gap-2 text-blue-600 font-medium">
+                      <HiAcademicCap className="text-2xl" />
+                      <span>Certified Professional</span>
+                    </div>
+                  </div>
+
+                  {/* Certificate Images Grid */}
+                  {cert.images && (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {cert.images.map((img, imgIndex) => (
+                        <motion.div
+                          key={imgIndex}
+                          className="relative rounded-lg overflow-hidden shadow-lg group cursor-pointer"
+                          whileHover={{ scale: 1.02 }}
+                          onClick={() => setModalImage(img)}
+                        >
+                          <img
+                            src={img}
+                            alt={`${cert.name} - ${imgIndex + 1}`}
+                            className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span className="text-white text-lg font-medium">Click to view</span>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+
+            {/* Regular Certifications */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {certifications.filter(cert => !cert.featured).map((cert, index) => (
                 <motion.div
                   key={index}
                   className="glass rounded-xl p-6 flex items-start gap-4"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={inView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.8 + index * 0.1 }}
+                  transition={{ delay: 0.9 + index * 0.1 }}
                   whileHover={{ scale: 1.05 }}
                 >
                   <span className="text-3xl">{cert.icon}</span>
@@ -187,6 +243,33 @@ const Education = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Image Modal */}
+      {modalImage && (
+        <motion.div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setModalImage(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
+            onClick={() => setModalImage(null)}
+          >
+            <HiX className="text-4xl" />
+          </button>
+          <motion.img
+            src={modalImage}
+            alt="Certificate"
+            className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </motion.div>
+      )}
     </section>
   );
 };
